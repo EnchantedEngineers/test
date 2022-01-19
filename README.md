@@ -1,2 +1,2 @@
 # test
-This is where we'll place all our information for P2
+We can use this test repository to practice merging and dealing with conflicts

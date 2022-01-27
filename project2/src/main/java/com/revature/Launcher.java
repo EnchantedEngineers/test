@@ -1,10 +1,16 @@
 package com.revature;
 
+import java.time.LocalDate;
+import java.util.List;
+
+import javax.persistence.NoResultException;
+
 import com.revature.controllers.CategoryController;
 import com.revature.controllers.InventoryController;
 import com.revature.controllers.ProductController;
 import com.revature.controllers.UserController;
 import com.revature.models.Address;
+import com.revature.models.Cart;
 import com.revature.models.Categories;
 import com.revature.models.CustomerOrder;
 import com.revature.models.Inventory;
@@ -12,23 +18,14 @@ import com.revature.models.Product;
 import com.revature.models.User;
 import com.revature.models.UserProfile;
 import com.revature.repositories.AddressDAO;
+import com.revature.repositories.CartDAO;
 import com.revature.repositories.CategoryDAO;
 import com.revature.repositories.CustomerOrderDAO;
 import com.revature.repositories.InventoryDAO;
 import com.revature.repositories.ProductDAO;
 import com.revature.repositories.UserDAO;
-import com.revature.util.HibernateUtil;
 
 import io.javalin.Javalin;
-
-import java.time.LocalDate;
-import java.util.Date;
-import java.util.List;
-
-import javax.persistence.NoResultException;
-
-import org.hibernate.HibernateException;
-import org.hibernate.Session;
 
 public class Launcher {
 
@@ -40,6 +37,7 @@ public class Launcher {
 		InventoryController ic = new InventoryController();
 		UserController uc = new UserController();
 		ProductController pc = new ProductController();
+		
 		
 		
 		Javalin app = Javalin.create(
@@ -66,7 +64,7 @@ public class Launcher {
 		app.get("user/profile/{username}", uc.getUserProfileHandler);
 		app.post("/user", uc.loginHandler);
 		app.post("/user/insert", uc.insertUserHandler);
-
+	}
 	//connect();
        //UserDAO uDAO=new UserDAO();
 //		test();
@@ -84,7 +82,7 @@ public class Launcher {
 		}*/
 	
 		
-	}
+	
 
 //	private static void connect() {
 //		try (Session ses = HibernateUtil.getSession()) {
@@ -100,7 +98,8 @@ public class Launcher {
 		
 		UserDAO uDAO = new UserDAO();
 		AddressDAO aDAO = new AddressDAO(); 
-		CategoryDAO cDAO = new CategoryDAO(); 
+		CategoryDAO cDAO = new CategoryDAO();
+		CartDAO CtDAO =new CartDAO();
 		
 		Address a1 = new Address("3707 Jason Dr.", " ", "Chattanooga", "TN", "USA", "37412"); 
 		Address a2 = new Address("15 Seminole", " ", "SugarLand", "TX", "USA", "77498");
@@ -169,6 +168,43 @@ public class Launcher {
 		
 		
 		}
+		
+//CART AND PRODUCT FUNCTIONALITY START HERE------------------------------------------------------------------------------------------------------------
+		
+		Product prod1 = new Product("Grape", 1.25, c2);
+
+
+		CustomerOrder or2 = new CustomerOrder( 5, 100.50, ld, u1, p1);
+
+			
+		Cart userCart1 = new Cart(prod1, u1, or2);
+
+		
+		System.out.println(userCart1);
+		
+		//Felix's addition started
+				CtDAO.insertCart(userCart1);
+
+		       
+		  	 List<Cart> allCartContent = CtDAO.getAllCart();
+		     for(Cart c: allCartContent) {
+		  	   System.out.println(c);
+		     }
+		      
+		     System.out.println(CtDAO.getCartContentsByUserId2(1));
+		     
+		     List<Cart> allCartContentbyUser = CtDAO.getCartContentsByUserId2(1);
+		     for(Cart c: allCartContentbyUser) {
+		  	   System.out.println(c);
+		     }
+
+
+		      
+//		     CtDAO.deleteCartContentsByCartId(1);
+		     
+		 //  Felix's addition ended
+		     
+//CART AND PRODUCT FUNCTIONALITY END START HERE------------------------------------------------------------------------------------------------------------
 		
 	}
 
